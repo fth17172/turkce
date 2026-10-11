@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Tahta Türkçe Portalı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans flex flex-col h-screen overflow-hidden select-none">
+
+    <!-- Üst Menü -->
+    <header class="bg-slate-800 p-4 border-b border-slate-700 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-3">
+            <span class="text-3xl">🎯</span>
+            <h1 class="text-2xl font-bold text-amber-400">Akıllı Türkçe Portalı</h1>
+        </div>
+        
+        <!-- Modlar -->
+        <div class="flex gap-3">
+            <button onclick="switchTab('sunu')" id="btn-sunu" class="px-6 py-2.5 bg-blue-600 rounded-xl text-lg font-bold hover:bg-blue-500 transition shadow">🖥️ Sunu Modu</button>
+            <button onclick="switchTab('yazmalik')" id="btn-yazmalik" class="px-6 py-2.5 bg-slate-700 rounded-xl text-lg font-bold hover:bg-slate-600 transition shadow">📝 Deftere Yazmalık</button>
+            <button onclick="switchTab('test')" id="btn-test" class="px-6 py-2.5 bg-slate-700 rounded-xl text-lg font-bold hover:bg-slate-600 transition shadow">❓ İnteraktif Test</button>
+        </div>
+    </header>
+
+    <!-- Ana İçerik -->
+    <main class="flex-1 p-6 relative flex flex-col justify-center items-center">
+
+        <!-- 1. SUNU MODÜLÜ -->
+        <div id="tab-sunu" class="tab-content w-full h-full flex flex-col justify-between items-center bg-slate-800 rounded-2xl p-10 border border-slate-700 shadow-2xl">
+            <div class="w-full text-left border-b border-slate-700 pb-4 flex justify-between items-center">
+                <span id="course-title" class="text-amber-400 font-semibold text-2xl">Konu: İsimler (Adlar)</span>
+                <span class="text-slate-400 text-sm">Akıllı Tahta Görünümü</span>
+            </div>
+            <div id="slide-content" class="text-4xl leading-relaxed text-center my-auto font-medium max-w-5xl">
+                <!-- Slayt içeriği -->
+            </div>
+            <div class="flex justify-between w-full items-center pt-4 border-t border-slate-700">
+                <button onclick="prevSlide()" class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-2xl rounded-xl transition shadow active:scale-95">⬅️ Önceki</button>
+                <span id="slide-indicator" class="text-2xl text-slate-300 font-bold">1 / 3</span>
+                <button onclick="nextSlide()" class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-2xl rounded-xl transition shadow active:scale-95">Sonraki ➡️</button>
+            </div>
+        </div>
+
+        <!-- 2. DEFTERE YAZMALIK MODÜLÜ -->
+        <div id="tab-yazmalik" class="tab-content hidden w-full h-full bg-slate-800 rounded-2xl p-10 border border-slate-700 overflow-y-auto shadow-2xl">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-amber-400 mb-6 border-b border-amber-400/30 pb-3">📌 Deftere Yazılacak Özet Notlar</h2>
+                <div id="yazmalik-content" class="space-y-6 text-2xl text-slate-200">
+                    <!-- Yazmalık notlar -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. İNTERAKTİF TEST MODÜLÜ -->
+        <div id="tab-test" class="tab-content hidden w-full h-full flex flex-col justify-center items-center bg-slate-800 rounded-2xl p-10 border border-slate-700 shadow-2xl">
+            <div class="max-w-3xl w-full">
+                <div id="quiz-progress" class="text-center mb-4 text-slate-400 text-xl font-semibold">Soru 1 / 1</div>
+                <h3 id="question-text" class="text-3xl font-bold mb-8 text-center text-slate-100">Soru yükleniyor...</h3>
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Şıklar -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // DERS VERİSİ
+        const courseData = {
+            title: "İsimler (Adlar)",
+            slides: [
+                "Bugün <span class='text-amber-400 font-bold'>İsimler (Adlar)</span> konusunu işliyoruz. Hazırsanız defterler kapansın!",
+                "Varlıklara verilişlerine göre isimler ikiye ayrılır: <span class='text-blue-400 font-bold'>Özel İsim</span> ve <span class='text-blue-400 font-bold'>Cins İsim</span>.",
+                "Dikkat! Cümle içinde özel isimlerin baş harfi her zaman <span class='text-red-400 font-bold'>büyük</span> yazılır."
+            ],
+            yazmalik: [
+                {
+                    title: "1. İsim (Ad) Nedir?",
+                    desc: "Canlı, cansız tüm varlıkları, duygu ve düşünceleri tanıtan sözcüklere denir.",
+                    color: "border-amber-400",
+                    titleColor: "text-amber-300"
+                },
+                {
+                    title: "2. Varlıkların Oluşuna Göre İsimler",
+                    desc: "<b>Özel İsim:</b> Dünyada tek olan varlıkları karşılar (Örn: Konya, Fatih).<br><b>Cins İsim:</b> Aynı türden varlıkların ortak adıdır (Örn: Kalem, masa).",
+                    color: "border-blue-400",
+                    titleColor: "text-blue-300"
+                }
+            ],
+            quiz: [
+                {
+                    q: "Aşağıdakilerden hangisi 'Cins (Tür) İsim' örneğidir?",
+                    options: ["Ankara", "Mehmet", "Bilgisayar", "Türkçe Dersi"],
+                    answer: 2
+                }
+            ]
+        };
+
+        // Sekme Değiştirme
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            
+            ['sunu', 'yazmalik', 'test'].forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if(t === tabName) {
+                    btn.className = "px-6 py-2.5 bg-blue-600 rounded-xl text-lg font-bold hover:bg-blue-500 transition shadow";
+                } else {
+                    btn.className = "px-6 py-2.5 bg-slate-700 rounded-xl text-lg font-bold hover:bg-slate-600 transition shadow";
+                }
+            });
+        }
+
+        // Sunu Mantığı
+        let currentSlide = 0;
+        function updateSlide() {
+            document.getElementById('course-title').innerText = `Konu: ${courseData.title}`;
+            document.getElementById('slide-content').innerHTML = courseData.slides[currentSlide];
+            document.getElementById('slide-indicator').innerText = `${currentSlide + 1} / ${courseData.slides.length}`;
+        }
+        function nextSlide() {
+            if (currentSlide < courseData.slides.length - 1) { currentSlide++; updateSlide(); }
+        }
+        function prevSlide() {
+            if (currentSlide > 0) { currentSlide--; updateSlide(); }
+        }
+
+        // Yazmalık Notları Yükleme
+        function loadYazmalik() {
+            const container = document.getElementById('yazmalik-content');
+            container.innerHTML = '';
+            courseData.yazmalik.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `bg-slate-900/60 p-6 rounded-2xl border-l-8 ${item.color} shadow`;
+                div.innerHTML = `<strong class="${item.titleColor} block mb-2">${item.title}</strong>${item.desc}`;
+                container.appendChild(div);
+            });
+        }
+
+        // Test Mantığı
+        function loadQuiz() {
+            const q = courseData.quiz[0];
+            document.getElementById('question-text').innerText = q.q;
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "p-5 bg-slate-700 hover:bg-slate-600 text-2xl font-semibold rounded-xl text-left border border-slate-600 transition shadow active:scale-98";
+                btn.innerText = `${String.fromCharCode(65 + idx)}) ${opt}`;
+                btn.onclick = () => {
+                    if(idx === q.answer) {
+                        btn.className = "p-5 bg-green-600 text-2xl font-semibold rounded-xl text-left border border-green-500 shadow";
+                    } else {
+                        btn.className = "p-5 bg-red-600 text-2xl font-semibold rounded-xl text-left border border-red-500 shadow";
+                    }
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        // Klavye Ok Tuşları Entegrasyonu (Akıllı Tahta Kumandaları veya Klavye için)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Başlat
+        updateSlide();
+        loadYazmalik();
+        loadQuiz();
+    </script>
+</body>
+</html>
